@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import Item from './components/item'
+import DragLayout from './drag-layout'
 
 class App extends Component {
   render() {
     return (
       <div className="app">
-        <Item />
+        <DragLayout />
       </div>
     )
   }
