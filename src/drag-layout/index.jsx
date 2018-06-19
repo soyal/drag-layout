@@ -1,8 +1,28 @@
 import React, { Component } from 'react'
 import Container from './container'
+import PropTypes from 'prop-types'
 import Item from './item'
 
 class DragLayout extends Component {
+  static propTypes = {
+    gridSize: PropTypes.number, // grid的边长，单位px
+    width: PropTypes.number, // 横向长度，单位是grid
+    height: PropTypes.number, // 纵向长度，单位grid
+    gap: PropTypes.number, // 间隙宽度
+    /**
+     * [{ width: 10(单位:grid), height: 5(单位grid) }]
+     */
+    data: PropTypes.array
+  }
+
+  static defaultProps = {
+    gridSize: 10,
+    width: 20,
+    height: 20,
+    gap: 5,
+    data: []
+  }
+
   // 鼠标是否按下
   isMouseDown = false
   // 被选择的item
@@ -36,6 +56,11 @@ class DragLayout extends Component {
     ]
   }
 
+  constructor(props) {
+    super(props)
+    // todo 思考布局策略
+  }
+
   setChosenItem(index) {
     const chosenItem = this.chosenItem
     const dataIndexItem = this.state.data[index]
@@ -59,7 +84,7 @@ class DragLayout extends Component {
     const chosenItem = this.chosenItem
     const chosenIndex = this.state.chosenIndex
     if (this.isMouseDown && chosenIndex > -1) {
-      const nArr = this.state.data.slice()
+      const nArr = this.state.data
       const dataIndexItem = nArr[chosenIndex]
       const offsetLeft = e.pageX - this.startX
       const offsetTop = e.pageY - this.startY
