@@ -7,83 +7,38 @@ import './index.less'
 
 class Item extends PureComponent {
   static propTypes = {
-    posLeft: PropTypes.number, // 确认定位的left
-    posTop: PropTypes.number // 确认定位的top
+    offsetLeft: PropTypes.number, // 横向偏移量
+    offsetTop: PropTypes.number, // 纵向偏移量
+    onChosen: PropTypes.func // 鼠标按下的回调
   }
 
-  static defaultPropsTypes = {
-    posLeft: 0,
-    posTop: 0
+  static defaultProps = {
+    offsetLeft: 0,
+    offsetTop: 0
   }
 
-  ctn = null // dom
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      left: props.posLeft,
-      top: props.posTop
-    }
-  }
-
-  listenMouseEvent() {
-    if(!this.ctn) return 
-    this.ctn.addEventListener('mousedown', this.__onMouseDown)
-    this.ctn.addEventListener('mousemove', this.__onMouseMove)
-    this.ctn.addEventListener('mouseup', this.__onMouseUp)
-  }
-
-  removeMouseEvent() {
-    if(!this.ctn) return
-    this.ctn.removeEventListener('mousedown', this.__onMouseDown)
-    this.ctn.removeEventListener('mousemove', this.__onMouseMove)
-    this.ctn.removeEventListener('mouseup', this.__onMouseUp)
+  __onDragStart = e => {
+    e.preventDefault()
   }
 
   __onMouseDown = e => {
-    console.log('mousedown')
-  }
-
-  __onMouseMove = e => {
-    console.log('mousemove')
-  }
-
-  __onMouseUp = e => {
-    console.log('mouseup')
-  }
-
-  componentWillUnmount() {
-    this.removeEventListener()
-  }
-
-  componentDidMount() {
-    this.listenMouseEvent()
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { posLeft, posTop } = this.props
-    // 定位位置发生变化，进行同步
-    if(posLeft !== prevProps.posLeft || posTop !== prevProps.posTop) {
-      this.setState({
-        left: posLeft,
-        top: posTop
-      })
+    if(e.button === 0) {
+      const { onChosen } = this.props
+  
+      onChosen && onChosen()
     }
   }
 
   render() {
-    const { left, top } = this.props
+    const { offsetLeft, offsetTop } = this.props
 
     return (
       <div
         className="drag-layout__item"
-        ref={dom => {
-          this.ctn = dom
-        }}
+        onDragStart={this.__onDragStart}
+        onMouseDown={this.__onMouseDown}
         style={{
-          left: left + 'px',
-          top: top + 'px'
+          transform: `translate(${offsetLeft}px, ${offsetTop}px)`
         }}
       >
         item
