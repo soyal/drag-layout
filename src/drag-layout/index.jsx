@@ -3,17 +3,19 @@ import Container from './container'
 import Item from './item'
 
 class DragLayout extends Component {
+  // 鼠标是否按下
   isMouseDown = false
   // 被选择的item
   chosenItem = {
-    index: -1,
     startOffsetLeft: 0,
     startOffsetTop: 0
   }
+  // 记录鼠标按下的鼠标pageX,pageY
   startX = 0
   startY = 0
 
   state = {
+    chosenIndex: -1, // 被选择的索引
     data: [
       {
         offsetTop: 0,
@@ -37,7 +39,9 @@ class DragLayout extends Component {
   setChosenItem(index) {
     const chosenItem = this.chosenItem
     const dataIndexItem = this.state.data[index]
-    chosenItem.index = index
+    this.setState({
+      chosenIndex: index
+    })
     chosenItem.startOffsetLeft = dataIndexItem.offsetLeft
     chosenItem.startOffsetTop = dataIndexItem.offsetTop
   }
@@ -53,9 +57,10 @@ class DragLayout extends Component {
 
   __onMouseMove = e => {
     const chosenItem = this.chosenItem
-    if (this.isMouseDown && chosenItem.index > -1) {
+    const chosenIndex = this.state.chosenIndex
+    if (this.isMouseDown && chosenIndex > -1) {
       const nArr = this.state.data.slice()
-      const dataIndexItem = nArr[chosenItem.index]
+      const dataIndexItem = nArr[chosenIndex]
       const offsetLeft = e.pageX - this.startX
       const offsetTop = e.pageY - this.startY
       dataIndexItem.offsetLeft = chosenItem.startOffsetLeft + offsetLeft
@@ -69,9 +74,10 @@ class DragLayout extends Component {
 
   __onMouseUp = e => {
     if(e.button === 0) {
-      console.log('mouseup')
       this.isMouseDown = false
-      this.chosenItem.index = -1
+      this.setState({
+        chosenIndex: -1
+      })
     }
   }
 
@@ -88,7 +94,7 @@ class DragLayout extends Component {
   }
 
   render() {
-    const { data } = this.state
+    const { data, chosenIndex } = this.state
 
     return (
       <div className="drag-layout">
@@ -98,6 +104,7 @@ class DragLayout extends Component {
               key={index}
               offsetLeft={item.offsetLeft}
               offsetTop={item.offsetTop}
+              isChosen={index === chosenIndex}
               onChosen={() => {
                 console.log('chosen', index)
                 this.setChosenItem(index)

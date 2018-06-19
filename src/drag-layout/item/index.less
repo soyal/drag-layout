@@ -3,5 +3,11 @@
   width: 100px;
   height: 100px;
   background: #80d5ff;
-  // transition: all .1s ease-in-out;
+  border: 2px solid #ccc;
+  transition: transform .1s ease-in-out;
+  z-index: 1;
+  &.chosen {
+    transition: none;
+    z-index: 10;
+  }
 }
